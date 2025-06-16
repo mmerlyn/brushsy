@@ -68,7 +68,7 @@ Speed up your workflow with these handy shortcuts:
 
 ## Contributing
 
-Got ideas? Found a bug? We'd love your help! Feel free to open an issue or submit a pull request. Let's make Brushsy even better together!
+Got ideas? Found a bug? Feel free to open an issue or submit a pull request. Let's make Brushsy even better together!
 
 ## 📄 License
 

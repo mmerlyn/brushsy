@@ -8,6 +8,11 @@ import ToolPanel from './components/ToolPanel';
 import ControlPanel from './components/ControlPanel';
 import ThemeToggle from './components/ThemeToggle';
 import { jsPDF } from 'jspdf';
+import { XCircle } from 'lucide-react';
+
+interface DrawingAppProps {
+    onClose?: () => void;
+}
 
 const initialState: AppState = {
     currentTool: 'brush',
@@ -26,7 +31,7 @@ const initialState: AppState = {
     title: 'Untitled Page',
 };
 
-const DrawingApp: React.FC = () => {
+const DrawingApp: React.FC<DrawingAppProps> = ({ onClose }) => {
     const canvasRefs = useRef<Array<HTMLCanvasElement | null>>([]);
     const overlayCanvasRefs = useRef<Array<HTMLCanvasElement | null>>([]);
     const scrollContainerRef = useRef<HTMLDivElement>(null);
@@ -171,9 +176,7 @@ const DrawingApp: React.FC = () => {
         
         if (overlayCanvas) {
             const overlayCtx = overlayCanvas.getContext('2d', { willReadFrequently: true });
-            // Ensure overlayCtx is not null before using its methods or properties
             if (overlayCtx) {
-                // Now, overlayCanvas and overlayCtx are definitely non-null within this block
                 overlayCtx.clearRect(0, 0, overlayCanvas.width, overlayCanvas.height);
             } else {
                 console.warn(`Overlay context not found for page ${pageIndex} in handleEnd.`);
@@ -222,9 +225,7 @@ const DrawingApp: React.FC = () => {
         state.pages.forEach((_, index) => {
             const canvas = canvasRefs.current[index];
             if (canvas) {
-                // Ensure canvas context is obtained correctly and willReadFrequently is set
                 const ctx = canvas.getContext('2d', { willReadFrequently: true });
-                // If ctx is null (e.g., canvas not supported or already destroyed), handle it
                 if (!ctx) {
                     console.error(`Could not get 2D context for canvas at index ${index}`);
                     return;
@@ -232,7 +233,6 @@ const DrawingApp: React.FC = () => {
             }
             const overlayCanvas = overlayCanvasRefs.current[index];
             if (overlayCanvas) {
-                // Ensure overlay canvas context is obtained correctly and willReadFrequently is set
                 const overlayCtx = overlayCanvas.getContext('2d', { willReadFrequently: true });
                 if (!overlayCtx) {
                     console.error(`Could not get 2D context for overlay canvas at index ${index}`);
@@ -486,12 +486,13 @@ const DrawingApp: React.FC = () => {
                     showLeftPanel: false,
                     showRightPanel: false
                 }));
+                onClose?.();
             }
         };
 
         window.addEventListener('keydown', handleKeyDown);
         return () => window.removeEventListener('keydown', handleKeyDown);
-    }, [state.showLeftPanel, state.showRightPanel, undo, redo, addPage, exportPNG, exportPDF, isEditingTitle]);
+    }, [state.showLeftPanel, state.showRightPanel, undo, redo, addPage, exportPNG, exportPDF, isEditingTitle, onClose]);
 
     const themeClasses: ThemeClasses = state.isDarkTheme ? {
         bg: 'bg-gradient-to-br from-slate-900 via-gray-900 to-slate-800',
@@ -523,6 +524,15 @@ const DrawingApp: React.FC = () => {
 
     return (
         <div className={`h-screen ${themeClasses.bg} ${themeClasses.text} relative overflow-hidden`}>
+            {onClose && (
+                <button
+                    onClick={onClose}
+                    className={`fixed top-4 right-4 z-50 w-12 h-12 ${themeClasses.surface} ${themeClasses.surfaceHover} rounded-full flex items-center justify-center ${themeClasses.shadow} transition-all duration-300 hover:scale-110`}
+                    title="Close Canvas (Escape)"
+                >
+                    <XCircle className="w-6 h-6 text-gray-500" />
+                </button>
+            )}
             <div className="absolute top-4 left-4 z-50">
                 {isEditingTitle ? (
                     <div className={`${themeClasses.modal} border ${themeClasses.border} rounded-xl px-4 py-3 ${themeClasses.shadow} flex items-center gap-3`}>
@@ -651,7 +661,7 @@ const DrawingApp: React.FC = () => {
                 <div
                     ref={scrollContainerRef}
                     className={`w-full h-full overflow-auto ${themeClasses.canvas} p-12`}
-                    onClick={handleCanvasClick} // Add click handler to canvas area
+                    onClick={handleCanvasClick}
                 >
                     <div className="flex flex-col items-center space-y-20">
                         {state.pages.map((page, pageIndex) => (
