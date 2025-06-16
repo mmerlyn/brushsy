@@ -66,10 +66,6 @@ Speed up your workflow with these handy shortcuts:
     * `C`: Toggle Controls Panel (right)
     * `Escape`: Close any open panels (Tools, Controls, or Title Editor)
 
-## Contributing
-
-Got ideas? Found a bug? Feel free to open an issue or submit a pull request. Let's make Brushsy even better together!
-
 ## 📄 License
 
 This project is open-source and released under the delightful [MIT License](LICENSE).
