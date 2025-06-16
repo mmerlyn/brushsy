@@ -27,8 +27,8 @@ const initialState: AppState = {
 };
 
 const DrawingApp: React.FC = () => {
-    const canvasRefs = useRef<(HTMLCanvasElement | null)[]>([]);
-    const overlayCanvasRefs = useRef<(HTMLCanvasElement | null)[]>([]);
+    const canvasRefs = useRef<Array<HTMLCanvasElement | null>>([]);
+    const overlayCanvasRefs = useRef<Array<HTMLCanvasElement | null>>([]);
     const scrollContainerRef = useRef<HTMLDivElement>(null);
     const isDrawing = useRef(false);
     const currentStroke = useRef<DrawingStroke | null>(null);
@@ -37,6 +37,7 @@ const DrawingApp: React.FC = () => {
     const [isExporting, setIsExporting] = useState(false);
     const [isEditingTitle, setIsEditingTitle] = useState(false);
     const [tempTitle, setTempTitle] = useState(state.title);
+
 
     const handleSaveTitle = useCallback(() => {
         setState(prev => ({ ...prev, title: tempTitle.trim() || 'Untitled Artwork' }));
@@ -57,6 +58,7 @@ const DrawingApp: React.FC = () => {
     }, [handleSaveTitle, handleCancelTitleEdit]);
 
     const handleCanvasClick = useCallback((e: React.MouseEvent) => {
+        e.preventDefault();
         if (state.showLeftPanel || state.showRightPanel) {
             setState(prev => ({
                 ...prev,
@@ -166,9 +168,18 @@ const DrawingApp: React.FC = () => {
         const pageIndex = state.activePageIndex;
         const finalStroke = currentStroke.current;
         const overlayCanvas = overlayCanvasRefs.current[pageIndex];
-        const overlayCtx = overlayCanvas?.getContext('2d', { willReadFrequently: true });
-        if (overlayCtx) {
-            overlayCtx.clearRect(0, 0, overlayCanvas.width, overlayCanvas.height);
+        
+        if (overlayCanvas) {
+            const overlayCtx = overlayCanvas.getContext('2d', { willReadFrequently: true });
+            // Ensure overlayCtx is not null before using its methods or properties
+            if (overlayCtx) {
+                // Now, overlayCanvas and overlayCtx are definitely non-null within this block
+                overlayCtx.clearRect(0, 0, overlayCanvas.width, overlayCanvas.height);
+            } else {
+                console.warn(`Overlay context not found for page ${pageIndex} in handleEnd.`);
+            }
+        } else {
+            console.warn(`Overlay canvas not found for page ${pageIndex} in handleEnd.`);
         }
 
         setState(prev => {
@@ -211,15 +222,26 @@ const DrawingApp: React.FC = () => {
         state.pages.forEach((_, index) => {
             const canvas = canvasRefs.current[index];
             if (canvas) {
-                canvas.getContext('2d', { willReadFrequently: true });
+                // Ensure canvas context is obtained correctly and willReadFrequently is set
+                const ctx = canvas.getContext('2d', { willReadFrequently: true });
+                // If ctx is null (e.g., canvas not supported or already destroyed), handle it
+                if (!ctx) {
+                    console.error(`Could not get 2D context for canvas at index ${index}`);
+                    return;
+                }
             }
             const overlayCanvas = overlayCanvasRefs.current[index];
             if (overlayCanvas) {
-                overlayCanvas.getContext('2d', { willReadFrequently: true });
+                // Ensure overlay canvas context is obtained correctly and willReadFrequently is set
+                const overlayCtx = overlayCanvas.getContext('2d', { willReadFrequently: true });
+                if (!overlayCtx) {
+                    console.error(`Could not get 2D context for overlay canvas at index ${index}`);
+                    return;
+                }
             }
             redrawCanvas(index, canvasRefs, overlayCanvasRefs, state, canvasWidth, canvasHeight);
         });
-    }, [state.pages, state.showGrid, state.isDarkTheme]);
+    }, [state.pages, state.showGrid, state.isDarkTheme, state]);
 
     const undo = useCallback(() => {
         setState(prev => {
