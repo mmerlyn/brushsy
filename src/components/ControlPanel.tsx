@@ -33,18 +33,22 @@ const ControlPanel: React.FC<ControlPanelProps> = ({
     if (!state.showRightPanel) return null;
 
     return (
-        <div 
-            className="fixed inset-0 bg-black/50 z-40 flex items-center justify-end p-4"
+        <div
+            className="fixed inset-0 bg-black/50 z-40 flex items-end sm:items-center justify-center sm:justify-end p-0 sm:p-4"
             onClick={(e) => {
                 if (e.target === e.currentTarget) {
                     setState(prev => ({ ...prev, showRightPanel: false }));
                 }
             }}
         >
-            <div 
-                className={`${themeClasses.modal} border ${themeClasses.border} rounded-lg p-6 ${themeClasses.shadow} max-w-sm w-full max-h-[90vh] overflow-y-auto`}
+            <div
+                className={`${themeClasses.modal} border-t sm:border ${themeClasses.border} rounded-t-2xl sm:rounded-lg p-4 sm:p-6 ${themeClasses.shadow} w-full sm:max-w-sm max-h-[85vh] sm:max-h-[90vh] overflow-y-auto`}
                 onClick={(e) => e.stopPropagation()}
             >
+                {/* Mobile drag handle */}
+                <div className="sm:hidden flex justify-center mb-3">
+                    <div className={`w-12 h-1 ${state.isDarkTheme ? 'bg-gray-600' : 'bg-gray-300'} rounded-full`}></div>
+                </div>
                 <div className="flex items-center justify-between mb-6">
                     <div className="flex items-center gap-3">
                         <div className={`w-8 h-8 ${state.isDarkTheme ? 'bg-blue-900/50' : 'bg-blue-100'} rounded-xl flex items-center justify-center`}>

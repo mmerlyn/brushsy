@@ -9,29 +9,20 @@ export interface ViewTransform {
     offsetY: number;
 }
 
-export interface AppState {
-    currentTool: string;
-    brushSize: number;
-    brushOpacity: number;
-    currentColor: string;
-    viewTransform: ViewTransform;
-    showGrid: boolean;
-    isDarkTheme: boolean;
-    title: string;
-    pages: DrawingPage[];
-    activePageIndex: number;
-    showLeftPanel: boolean;
-    showRightPanel: boolean;
-    isPanning: boolean;
-    cursorPosition: Point | null;
-}
-
 export interface DrawingStroke {
+    id: string;
     tool: string;
     points: Point[];
     color: string;
     size: number;
     opacity: number;
+}
+
+export interface DrawingPage {
+    id: string;
+    strokes: DrawingStroke[];
+    history: DrawingStroke[][];
+    historyIndex: number;
 }
 
 export interface ThemeClasses {
@@ -49,29 +40,19 @@ export interface ThemeClasses {
     ring: string;
 }
 
-export interface DrawingPage {
-    id: string;
-    strokes: DrawingStroke[];
-    history: DrawingStroke[][];
-    historyIndex: number;
-}
-
 export interface AppState {
     currentTool: string;
     brushSize: number;
     brushOpacity: number;
     currentColor: string;
-    viewTransform: {
-        scale: number;
-        offsetX: number;
-        offsetY: number;
-    };
+    viewTransform: ViewTransform;
     showGrid: boolean;
     isDarkTheme: boolean;
+    title: string;
     pages: DrawingPage[];
     activePageIndex: number;
     showLeftPanel: boolean;
     showRightPanel: boolean;
     isPanning: boolean;
-    cursorPosition: Point | null;
+    selectedStrokeIds: string[];
 }
