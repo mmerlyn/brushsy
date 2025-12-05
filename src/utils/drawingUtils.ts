@@ -2,11 +2,12 @@ import type { RefObject } from 'react';
 import type { DrawingStroke, AppState, Point } from '../types/types';
 
 
-export const drawStroke = (ctx: CanvasRenderingContext2D, stroke: DrawingStroke, isDarkTheme: boolean) => {
+export const drawStroke = (ctx: CanvasRenderingContext2D, stroke: DrawingStroke, _isDarkTheme: boolean) => {
     if (!stroke || stroke.points.length < 1) return;
     ctx.save();
     ctx.globalAlpha = stroke.opacity / 100;
-    ctx.strokeStyle = stroke.tool === 'eraser' ? (isDarkTheme ? '#121212' : '#ffffff') : stroke.color;
+    // Canvas is always white, so eraser always uses white
+    ctx.strokeStyle = stroke.tool === 'eraser' ? '#ffffff' : stroke.color;
     ctx.lineWidth = stroke.size;
     ctx.lineCap = 'round';
     ctx.lineJoin = 'round';
@@ -63,13 +64,15 @@ export const redrawCanvas = (
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     if (clearOverlay) overlayCtx.clearRect(0, 0, canvas.width, canvas.height);
 
-    ctx.fillStyle = state.isDarkTheme ? '#121212' : '#ffffff';
+    // Canvas background is always white for consistent drawing and export
+    ctx.fillStyle = '#ffffff';
     ctx.fillRect(0, 0, canvasWidth, canvasHeight);
 
     page.strokes.forEach(stroke => drawStroke(ctx, stroke, state.isDarkTheme));
 
     if (state.showGrid) {
-        ctx.strokeStyle = state.isDarkTheme ? '#2a2a2a' : '#f0f0f0';
+        // Grid is always light gray since canvas is always white
+        ctx.strokeStyle = '#e5e5e5';
         ctx.lineWidth = 0.5;
         const gridSize = 20;
         for (let x = 0; x <= canvasWidth; x += gridSize) {

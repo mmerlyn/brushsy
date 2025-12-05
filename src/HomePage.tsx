@@ -1,285 +1,367 @@
 import React, { useState, useEffect } from 'react';
-import { Palette, Zap, Download, Moon, Sun } from 'lucide-react';
-import DrawingApp from './DrawingApp'; 
+import { Pencil, Layers, Download, Undo2, ZoomIn, Moon, Sun, Smartphone, ArrowRight } from 'lucide-react';
+import DrawingApp from './DrawingApp';
 
-const HomePage: React.FC = () => { 
+const HomePage: React.FC = () => {
   const [theme, setTheme] = useState<'dark' | 'light'>('dark');
   const [isCanvasOpen, setIsCanvasOpen] = useState(false);
-
-  const openCanvas = (): void => {
-    setIsCanvasOpen(true);
-  };
-
-  const toggleTheme = (): void => {
-    setTheme(theme === 'dark' ? 'light' : 'dark');
-  };
+  const [isLoaded, setIsLoaded] = useState(false);
+  const [activeFeature, setActiveFeature] = useState(0);
 
   useEffect(() => {
-    const handleMouseMove = (e: MouseEvent): void => {
-      const mouseX = e.clientX / window.innerWidth;
-      const mouseY = e.clientY / window.innerHeight;
-
-      const heroContent = document.querySelector('.hero-content') as HTMLElement;
-      if (heroContent) {
-        const translateX = (mouseX - 0.5) * 20;
-        const translateY = (mouseY - 0.5) * 20;
-        heroContent.style.transform = `translate(${translateX}px, ${translateY}px)`;
-      }
-    };
-
-    const handleScroll = (): void => {
-      const scrolled = window.pageYOffset;
-      const elements = document.querySelectorAll('.floating-element');
-
-      elements.forEach((element, index) => {
-        const speed = 0.3 + (index * 0.15);
-        const rotate = scrolled * (0.1 + index * 0.05);
-        (element as HTMLElement).style.transform = `translateY(${scrolled * speed}px) rotate(${rotate}deg)`;
-      });
-    };
-
-    document.addEventListener('mousemove', handleMouseMove);
-    window.addEventListener('scroll', handleScroll);
-
-    return () => {
-      document.removeEventListener('mousemove', handleMouseMove);
-      window.removeEventListener('scroll', handleScroll);
-    };
-  }, []); 
+    setIsLoaded(true);
+    const interval = setInterval(() => {
+      setActiveFeature(prev => (prev + 1) % 6);
+    }, 2000);
+    return () => clearInterval(interval);
+  }, []);
 
   const features = [
-    {
-      icon: <Palette className="w-8 h-8" />,
-      title: "Advanced Brushes",
-      description: "Professional-grade brush engines with realistic texture simulation, pressure sensitivity, and infinite customization options for every artistic style."
-    },
-    {
-      icon: <Zap className="w-8 h-8" />,
-      title: "Lightning Fast",
-      description: "Optimized performance with real-time rendering, instant undo/redo, and smooth 60fps drawing experience even with complex compositions."
-    },
-    {
-      icon: <Download className="w-8 h-8" />,
-      title: "Smart Export",
-      description: "Export in multiple formats including vector PDF, high-resolution PNG, and web-optimized formats with intelligent compression algorithms."
-    }
+    { icon: <Pencil className="w-5 h-5" />, label: "Drawing Tools" },
+    { icon: <Layers className="w-5 h-5" />, label: "Multi-Page" },
+    { icon: <Undo2 className="w-5 h-5" />, label: "Undo/Redo" },
+    { icon: <ZoomIn className="w-5 h-5" />, label: "Zoom" },
+    { icon: <Download className="w-5 h-5" />, label: "Export" },
+    { icon: <Smartphone className="w-5 h-5" />, label: "Mobile Ready" },
   ];
 
-  const FloatingElement: React.FC<{
-    size: string;
-    position: string;
-    delay: string;
-  }> = ({ size, position, delay }) => (
-    <div
-      className={`floating-element absolute rounded-full bg-gradient-to-r from-pink-500 to-rose-500 opacity-10 ${size} ${position}`}
-      style={{
-        animation: `complexFloat 12s ease-in-out infinite ${delay}`,
-        filter: 'blur(1px)'
-      }}
-    />
-  );
-
   return (
-    <div className={`min-h-screen transition-all duration-700 ease-in-out relative overflow-x-hidden ${
-      theme === 'dark'
-        ? 'bg-black text-white'
-        : 'bg-white text-slate-800'
+    <div className={`min-h-screen transition-colors duration-500 overflow-hidden ${
+      theme === 'dark' ? 'bg-zinc-950 text-white' : 'bg-zinc-50 text-zinc-900'
     }`}>
 
-      <div className="fixed inset-0 overflow-hidden pointer-events-none z-0">
+      {/* Animated background gradient */}
+      <div className="fixed inset-0 overflow-hidden pointer-events-none">
         <div
-          className={`absolute inset-0 opacity-40 animate-gradient-shift ${
-            theme === 'dark'
-              ? 'bg-gradient-to-br from-pink-500/20 via-transparent to-rose-500/20'
-              : 'bg-gradient-to-br from-pink-100 via-transparent to-rose-100'
+          className={`absolute -top-1/2 -left-1/2 w-full h-full rounded-full blur-3xl animate-pulse ${
+            theme === 'dark' ? 'bg-purple-500/10' : 'bg-purple-500/5'
           }`}
-          style={{ backgroundSize: '60px 60px' }} 
+          style={{ animation: 'float 8s ease-in-out infinite' }}
         />
-
         <div
-          className={`absolute inset-0 opacity-50 animate-mesh-move ${
-            theme === 'dark'
-              ? 'bg-[linear-gradient(rgba(255,255,255,0.1)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.1)_1px,transparent_1px)]'
-              : 'bg-[linear-gradient(rgba(148,163,184,0.2)_1px,transparent_1px),linear-gradient(90deg,rgba(148,163,184,0.2)_1px,transparent_1px)]'
+          className={`absolute -bottom-1/2 -right-1/2 w-full h-full rounded-full blur-3xl ${
+            theme === 'dark' ? 'bg-fuchsia-500/10' : 'bg-fuchsia-500/5'
           }`}
-          style={{ backgroundSize: '60px 60px' }}
+          style={{ animation: 'float 10s ease-in-out infinite reverse' }}
         />
       </div>
 
-      <div className="fixed inset-0 overflow-hidden pointer-events-none z-10">
-        <FloatingElement size="w-25 h-25" position="top-[15%] left-[8%]" delay="0s" />
-        <FloatingElement size="w-15 h-15" position="top-[45%] right-[12%]" delay="3s" />
-        <FloatingElement size="w-30 h-30" position="bottom-[25%] left-[15%]" delay="6s" />
-        <FloatingElement size="w-20 h-20" position="top-[70%] right-[8%]" delay="9s" />
-      </div>
+      {/* Grid pattern */}
+      <div
+        className={`fixed inset-0 pointer-events-none transition-opacity duration-500 ${
+          theme === 'dark' ? 'opacity-20' : 'opacity-40'
+        }`}
+        style={{
+          backgroundImage: theme === 'dark'
+            ? 'radial-gradient(circle, rgba(255,255,255,0.1) 1px, transparent 1px)'
+            : 'radial-gradient(circle, rgba(0,0,0,0.1) 1px, transparent 1px)',
+          backgroundSize: '32px 32px'
+        }}
+      />
 
-      <div className="relative z-20 max-w-7xl mx-auto px-8">
-        <header className="py-8 relative backdrop-blur-xl">
-          <nav
-            className="flex justify-between items-center opacity-0 animate-slide-in-down"
-            style={{ animationDelay: '0.3s', animationFillMode: 'forwards' }}
-          >
-            <a
-              href="#"
-              className="text-3xl font-bold bg-gradient-to-r from-pink-500 to-rose-500 bg-clip-text text-transparent relative group transition-all duration-400"
-            >
+      {/* Header */}
+      <header className={`fixed top-0 left-0 right-0 z-30 px-6 py-4 transition-all duration-700 ${
+        isLoaded ? 'translate-y-0 opacity-100' : '-translate-y-full opacity-0'
+      }`}>
+        <nav className="max-w-6xl mx-auto flex justify-between items-center">
+          <span className="text-xl font-bold tracking-tight flex items-center gap-2 group cursor-pointer">
+            <div className={`w-8 h-8 rounded-lg flex items-center justify-center transition-transform duration-300 group-hover:rotate-12 bg-gradient-to-br from-purple-600 to-fuchsia-600`}>
+              <Pencil className="w-4 h-4 text-white" />
+            </div>
+            <span className="bg-gradient-to-r from-purple-400 to-fuchsia-400 bg-clip-text text-transparent">
               Brushsy
-              <div className="absolute -inset-1 bg-gradient-to-r from-pink-500 to-rose-500 rounded-xl opacity-0 group-hover:opacity-30 transition-opacity duration-400 blur-xl -z-10" />
-            </a>
+            </span>
+          </span>
+          <button
+            onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
+            className={`p-2.5 rounded-xl transition-all duration-300 hover:scale-110 active:scale-95 ${
+              theme === 'dark'
+                ? 'bg-zinc-800 hover:bg-zinc-700'
+                : 'bg-zinc-200 hover:bg-zinc-300'
+            }`}
+          >
+            {theme === 'dark' ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
+          </button>
+        </nav>
+      </header>
 
-            <button
-              onClick={toggleTheme}
-              className={`flex items-center gap-3 px-6 py-3 rounded-full border transition-all duration-400 backdrop-blur-xl hover:transform hover:-translate-y-0.5 relative overflow-hidden group ${
-                theme === 'dark'
-                  ? 'bg-white/5 border-white/10 hover:shadow-lg hover:shadow-pink-500/30'
-                  : 'bg-black/5 border-black/10 hover:shadow-lg hover:shadow-pink-500/20'
-              }`}
-            >
-              <div className="absolute inset-0 bg-gradient-to-r from-transparent via-pink-500/30 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-600" />
-              {theme === 'dark' ? <Sun className="w-5 h-5 relative z-10" /> : <Moon className="w-5 h-5 relative z-10" />}
-            </button>
-          </nav>
-        </header>
+      {/* Hero */}
+      <main className="relative z-10 min-h-screen flex flex-col items-center justify-center px-6 pt-16">
+        <div className="max-w-4xl mx-auto text-center">
 
-        <main className="min-h-[85vh] flex items-center text-center relative">
-          <div className="hero-content w-full relative transition-transform duration-300 ease-out">
-
-            <h1
-              className={`text-6xl md:text-8xl font-extrabold mb-8 leading-none opacity-0 animate-slide-in-up ${
-                theme === 'dark'
-                  ? 'bg-gradient-to-b from-white to-gray-400'
-                  : 'bg-gradient-to-b from-slate-900 to-slate-600'
-              } bg-clip-text text-transparent`}
-              style={{ animationDelay: '0.4s', animationFillMode: 'forwards' }}
-            >
-              Create Without<br/>Boundaries
-            </h1>
-
-            <p
-              className={`text-xl md:text-2xl mb-12 max-w-3xl mx-auto leading-relaxed font-light opacity-0 animate-slide-in-up ${
-                theme === 'dark' ? 'text-gray-300' : 'text-slate-600'
-              }`}
-              style={{ animationDelay: '0.6s', animationFillMode: 'forwards' }}
-            >
-              Experience the future of digital drawing with advanced tools,
-              seamless workflows, and unlimited creative possibilities.
-            </p>
-
-            <div
-              className="grid md:grid-cols-3 gap-8 mb-20 opacity-0 animate-slide-in-up"
-              style={{ animationDelay: '0.8s', animationFillMode: 'forwards' }}
-            >
-              {features.map((feature, index) => (
-                <div
-                  key={index}
-                  className={`group relative p-10 rounded-3xl border backdrop-blur-xl transition-all duration-700 hover:-translate-y-4 hover:scale-105 transform-gpu cursor-pointer ${
-                    theme === 'dark'
-                      ? 'bg-white/5 border-white/10 hover:border-pink-500/30 shadow-2xl shadow-black/50'
-                      : 'bg-white/80 border-gray-200 hover:border-pink-500/30 shadow-2xl shadow-black/10'
-                  }`}
-                  style={{
-                    transformStyle: 'preserve-3d',
-                    perspective: '1000px'
-                  }}
-                  onMouseEnter={(e) => {
-                    const target = e.currentTarget as HTMLElement;
-                    target.style.transform = 'translateY(-15px) rotateX(5deg) rotateY(5deg) scale(1.05)';
-                    target.style.boxShadow = theme === 'dark'
-                      ? '0 25px 50px rgba(0, 0, 0, 0.5), 0 0 50px rgba(236, 72, 153, 0.3)'
-                      : '0 25px 50px rgba(0, 0, 0, 0.1), 0 0 50px rgba(236, 72, 153, 0.2)';
-                  }}
-                  onMouseLeave={(e) => {
-                    const target = e.currentTarget as HTMLElement;
-                    target.style.transform = '';
-                    target.style.boxShadow = theme === 'dark'
-                      ? '0 25px 50px rgba(0, 0, 0, 0.5)'
-                      : '0 25px 50px rgba(0, 0, 0, 0.1)';
-                  }}
-                >
-
-                  <div className="absolute inset-0 bg-gradient-to-br from-pink-500/20 to-rose-500/20 rounded-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
-
-                  <div
-                    className="relative z-10 w-18 h-18 rounded-2xl bg-gradient-to-br from-pink-500 to-rose-500 flex items-center justify-center mb-8 mx-auto text-white transition-all duration-700 group-hover:scale-110 group-hover:rotate-y-180"
-                    style={{
-                      boxShadow: '0 15px 30px rgba(236, 72, 153, 0.3)',
-                      transformStyle: 'preserve-3d'
-                    }}
-                  >
-                    {feature.icon}
-                  </div>
-
-                  <div className="relative z-10">
-                    <h3 className={`text-2xl font-semibold mb-4 transition-colors duration-700 ${
-                      theme === 'dark' ? 'text-white' : 'text-slate-900'
-                    }`}>
-                      {feature.title}
-                    </h3>
-                    <p className={`leading-relaxed transition-colors duration-700 ${
-                      theme === 'dark' ? 'text-gray-300' : 'text-slate-600'
-                    }`}>
-                      {feature.description}
-                    </p>
-                  </div>
-                </div>
-              ))}
-            </div>
-
-            <div className="text-center mb-32">
-              <button
-                onClick={openCanvas}
-                className="group inline-flex items-center gap-4 bg-gradient-to-r from-pink-500 to-rose-500 text-white px-12 py-5 text-xl font-semibold rounded-full transition-all duration-700 hover:-translate-y-2 hover:scale-105 relative overflow-hidden opacity-0 animate-slide-in-up shadow-2xl shadow-pink-500/30"
-                style={{
-                  animationDelay: '1s',
-                  animationFillMode: 'forwards',
-                  transformStyle: 'preserve-3d'
-                }}
-                onMouseEnter={(e) => {
-                  const target = e.currentTarget as HTMLElement;
-                  target.style.boxShadow = '0 25px 50px rgba(236, 72, 153, 0.3), 0 0 80px rgba(236, 72, 153, 0.3)';
-
-                  const ripple = document.createElement('div');
-                  ripple.className = 'absolute rounded-full bg-white/30 pointer-events-none';
-                  const rect = target.getBoundingClientRect();
-                  ripple.style.width = ripple.style.height = `${Math.max(rect.width, rect.height)}px`;
-                  ripple.style.left = `${e.clientX - rect.left - parseFloat(ripple.style.width) / 2}px`;
-                  ripple.style.top = `${e.clientY - rect.top - parseFloat(ripple.style.height) / 2}px`;
-                  ripple.style.transform = 'scale(0)';
-                  ripple.style.animation = 'ripple 0.6s linear';
-
-                  target.appendChild(ripple);
-
-                  setTimeout(() => {
-                    ripple.remove();
-                  }, 600);
-                }}
-                onMouseLeave={(e) => {
-                  const target = e.currentTarget as HTMLElement;
-                  target.style.boxShadow = '0 25px 50px rgba(236, 72, 153, 0.3)';
-                }}
-              >
-
-                <div className="absolute inset-0 bg-gradient-to-r from-rose-500 to-pink-500 opacity-0 group-hover:opacity-100 transition-opacity duration-700 rounded-full" />
-
-                <span className="relative z-10">Launch Canvas</span>
-                <span className="relative z-10 transition-transform duration-700 group-hover:translate-x-2 group-hover:rotate-45">
-                  →
-                </span>
-
-                <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-700 rounded-full" />
-              </button>
-            </div>
-
+          {/* Badge */}
+          <div
+            className={`inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-sm mb-6 transition-all duration-700 ${
+              isLoaded ? 'translate-y-0 opacity-100' : '-translate-y-4 opacity-0'
+            } ${
+              theme === 'dark'
+                ? 'bg-zinc-800/80 text-zinc-300 border border-zinc-700'
+                : 'bg-white/80 text-zinc-600 border border-zinc-200 shadow-sm'
+            }`}
+          >
+            <span className="relative flex h-2 w-2">
+              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-purple-400 opacity-75"></span>
+              <span className="relative inline-flex rounded-full h-2 w-2 bg-purple-500"></span>
+            </span>
+            Free & Open Source
           </div>
-          {isCanvasOpen && (
-        <div className="fixed inset-0 z-50 bg-black/80 flex items-center justify-center">
+
+          {/* Headline */}
+          <h1
+            className={`text-4xl sm:text-5xl md:text-7xl font-bold tracking-tight mb-6 transition-all duration-700 delay-100 ${
+              isLoaded ? 'translate-y-0 opacity-100' : 'translate-y-4 opacity-0'
+            }`}
+          >
+            <span className="inline-block hover:scale-105 transition-transform cursor-default">Draw.</span>{' '}
+            <span className="inline-block hover:scale-105 transition-transform cursor-default bg-gradient-to-r from-purple-400 to-fuchsia-400 bg-clip-text text-transparent">Create.</span>{' '}
+            <span className="inline-block hover:scale-105 transition-transform cursor-default">Export.</span>
+          </h1>
+
+          <p
+            className={`text-lg md:text-xl mb-10 max-w-xl mx-auto transition-all duration-700 delay-200 ${
+              isLoaded ? 'translate-y-0 opacity-100' : 'translate-y-4 opacity-0'
+            } ${
+              theme === 'dark' ? 'text-zinc-400' : 'text-zinc-600'
+            }`}
+          >
+            A simple, fast drawing app that works right in your browser. No sign-up required.
+          </p>
+
+          {/* CTA Buttons */}
+          <div
+            className={`flex flex-col sm:flex-row gap-4 justify-center items-center mb-12 transition-all duration-700 delay-300 ${
+              isLoaded ? 'translate-y-0 opacity-100' : 'translate-y-4 opacity-0'
+            }`}
+          >
+            <button
+              onClick={() => setIsCanvasOpen(true)}
+              className="group inline-flex items-center gap-2 bg-gradient-to-r from-purple-600 to-fuchsia-600 hover:from-purple-500 hover:to-fuchsia-500 text-white px-8 py-4 rounded-xl text-lg font-medium transition-all duration-300 hover:scale-105 hover:shadow-xl hover:shadow-purple-500/25 active:scale-95"
+            >
+              <Pencil className="w-5 h-5 transition-transform group-hover:rotate-12" />
+              Start Drawing
+              <ArrowRight className="w-5 h-5 transition-transform group-hover:translate-x-1" />
+            </button>
+            <a
+              href="https://github.com"
+              target="_blank"
+              rel="noopener noreferrer"
+              className={`inline-flex items-center gap-2 px-6 py-4 rounded-xl text-lg font-medium transition-all duration-300 hover:scale-105 active:scale-95 ${
+                theme === 'dark'
+                  ? 'bg-zinc-800 hover:bg-zinc-700 text-zinc-300'
+                  : 'bg-zinc-200 hover:bg-zinc-300 text-zinc-700'
+              }`}
+            >
+              <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
+              </svg>
+              View Source
+            </a>
+          </div>
+
+          {/* Features */}
+          <div
+            className={`flex flex-wrap justify-center gap-3 transition-all duration-700 delay-400 ${
+              isLoaded ? 'translate-y-0 opacity-100' : 'translate-y-4 opacity-0'
+            }`}
+          >
+            {features.map((feature, i) => (
+              <div
+                key={i}
+                className={`flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm transition-all duration-300 cursor-default ${
+                  activeFeature === i
+                    ? 'bg-gradient-to-r from-purple-600 to-fuchsia-600 text-white scale-105 shadow-lg shadow-purple-500/25'
+                    : theme === 'dark'
+                      ? 'bg-zinc-800/80 text-zinc-400 hover:bg-zinc-800 hover:text-zinc-300'
+                      : 'bg-white/80 text-zinc-600 hover:bg-white hover:text-zinc-800 shadow-sm'
+                }`}
+                onMouseEnter={() => setActiveFeature(i)}
+              >
+                {feature.icon}
+                {feature.label}
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Canvas Preview */}
+        <div
+          className={`w-full max-w-4xl mx-auto mt-16 mb-8 transition-all duration-1000 delay-500 ${
+            isLoaded ? 'translate-y-0 opacity-100' : 'translate-y-8 opacity-0'
+          }`}
+        >
+          <div
+            className={`relative rounded-2xl overflow-hidden cursor-pointer transition-all duration-500 hover:scale-[1.02] hover:shadow-2xl group ${
+              theme === 'dark'
+                ? 'bg-zinc-900 shadow-xl shadow-black/50 ring-1 ring-zinc-800'
+                : 'bg-white shadow-xl shadow-zinc-200/50 ring-1 ring-zinc-200'
+            }`}
+            onClick={() => setIsCanvasOpen(true)}
+          >
+            {/* Mock toolbar */}
+            <div className={`flex items-center gap-2 px-4 py-3 border-b ${
+              theme === 'dark' ? 'border-zinc-800' : 'border-zinc-100'
+            }`}>
+              <div className="flex gap-1.5">
+                <div className="w-3 h-3 rounded-full bg-red-500 hover:bg-red-400 transition-colors"></div>
+                <div className="w-3 h-3 rounded-full bg-yellow-500 hover:bg-yellow-400 transition-colors"></div>
+                <div className="w-3 h-3 rounded-full bg-green-500 hover:bg-green-400 transition-colors"></div>
+              </div>
+              <div className={`flex-1 text-center text-sm ${
+                theme === 'dark' ? 'text-zinc-500' : 'text-zinc-400'
+              }`}>
+                Untitled — Brushsy
+              </div>
+            </div>
+
+            {/* Mock canvas area */}
+            <div className={`relative aspect-[16/9] ${theme === 'dark' ? 'bg-zinc-950' : 'bg-zinc-50'}`}>
+              {/* Grid pattern */}
+              <div
+                className={`absolute inset-0 transition-opacity duration-500 ${
+                  theme === 'dark' ? 'opacity-100' : 'opacity-50'
+                }`}
+                style={{
+                  backgroundImage: theme === 'dark'
+                    ? 'radial-gradient(circle, rgba(255,255,255,0.05) 1px, transparent 1px)'
+                    : 'radial-gradient(circle, rgba(0,0,0,0.05) 1px, transparent 1px)',
+                  backgroundSize: '20px 20px'
+                }}
+              />
+
+              {/* Animated sample drawings */}
+              <svg className="absolute inset-0 w-full h-full" viewBox="0 0 800 450">
+                {/* Animated Circle */}
+                <circle
+                  cx="180" cy="140" r="50"
+                  fill="none"
+                  stroke="#a855f7"
+                  strokeWidth="3"
+                  strokeDasharray="314"
+                  className="animate-draw"
+                  style={{ animation: 'draw 2s ease-out forwards' }}
+                />
+
+                {/* Animated Rectangle */}
+                <rect
+                  x="340" y="90" width="100" height="70"
+                  fill="none"
+                  stroke="#d946ef"
+                  strokeWidth="3"
+                  strokeDasharray="340"
+                  style={{ animation: 'draw 2s ease-out 0.3s forwards' }}
+                />
+
+                {/* Animated Squiggle */}
+                <path
+                  d="M 520 100 Q 560 60 600 110 Q 640 160 680 120 Q 720 80 750 130"
+                  fill="none"
+                  stroke="#f43f5e"
+                  strokeWidth="3"
+                  strokeLinecap="round"
+                  strokeDasharray="300"
+                  style={{ animation: 'draw 2s ease-out 0.6s forwards' }}
+                />
+
+                {/* Animated Triangle */}
+                <path
+                  d="M 150 350 L 220 250 L 290 350 Z"
+                  fill="none"
+                  stroke="#c026d3"
+                  strokeWidth="3"
+                  strokeDasharray="350"
+                  style={{ animation: 'draw 2s ease-out 0.9s forwards' }}
+                />
+
+                {/* Animated Wave */}
+                <path
+                  d="M 350 300 Q 420 240 490 300 Q 560 360 630 300 Q 700 240 750 300"
+                  fill="none"
+                  stroke={theme === 'dark' ? '#fff' : '#18181b'}
+                  strokeWidth="4"
+                  strokeLinecap="round"
+                  strokeDasharray="500"
+                  style={{ animation: 'draw 2.5s ease-out 1.2s forwards' }}
+                />
+
+                {/* Cursor animation */}
+                <g style={{ animation: 'cursor-move 4s ease-in-out infinite' }}>
+                  <circle r="8" fill="#a855f7" opacity="0.3">
+                    <animate attributeName="cx" values="180;450;650;400;180" dur="4s" repeatCount="indefinite" />
+                    <animate attributeName="cy" values="140;300;120;320;140" dur="4s" repeatCount="indefinite" />
+                  </circle>
+                  <circle r="4" fill="#a855f7">
+                    <animate attributeName="cx" values="180;450;650;400;180" dur="4s" repeatCount="indefinite" />
+                    <animate attributeName="cy" values="140;300;120;320;140" dur="4s" repeatCount="indefinite" />
+                  </circle>
+                </g>
+              </svg>
+
+              {/* Hover overlay */}
+              <div className="absolute inset-0 flex items-center justify-center bg-black/0 group-hover:bg-black/20 transition-all duration-300">
+                <span className={`px-6 py-3 rounded-xl text-sm font-medium transform scale-90 opacity-0 group-hover:scale-100 group-hover:opacity-100 transition-all duration-300 ${
+                  theme === 'dark' ? 'bg-white text-zinc-900' : 'bg-zinc-900 text-white'
+                }`}>
+                  Click to start drawing →
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Footer */}
+        <footer
+          className={`pb-8 text-sm transition-all duration-700 delay-700 ${
+            isLoaded ? 'translate-y-0 opacity-100' : 'translate-y-4 opacity-0'
+          } ${
+            theme === 'dark' ? 'text-zinc-500' : 'text-zinc-400'
+          }`}
+        >
+          Built with React + TypeScript + Canvas API
+        </footer>
+      </main>
+
+      {/* Drawing App Modal */}
+      {isCanvasOpen && (
+        <div className="fixed inset-0 z-50 animate-fade-in">
           <DrawingApp onClose={() => setIsCanvasOpen(false)} />
         </div>
       )}
-        </main>
 
+      {/* Custom styles for animations */}
+      <style>{`
+        @keyframes draw {
+          from {
+            stroke-dashoffset: 500;
+            opacity: 0;
+          }
+          to {
+            stroke-dashoffset: 0;
+            opacity: 1;
+          }
+        }
 
-      </div>
+        @keyframes float {
+          0%, 100% {
+            transform: translate(0, 0) scale(1);
+          }
+          50% {
+            transform: translate(30px, -30px) scale(1.1);
+          }
+        }
+
+        @keyframes fade-in {
+          from {
+            opacity: 0;
+          }
+          to {
+            opacity: 1;
+          }
+        }
+
+        .animate-fade-in {
+          animation: fade-in 0.3s ease-out;
+        }
+      `}</style>
     </div>
   );
 };
