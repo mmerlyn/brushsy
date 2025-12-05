@@ -1,5 +1,5 @@
 import type { RefObject } from 'react';
-import type { DrawingStroke, AppState } from '../types/types';
+import type { DrawingStroke, AppState, Point } from '../types/types';
 
 
 export const drawStroke = (ctx: CanvasRenderingContext2D, stroke: DrawingStroke, isDarkTheme: boolean) => {
@@ -85,4 +85,112 @@ export const redrawCanvas = (
             ctx.stroke();
         }
     }
+};
+
+// Helper to calculate distance from point to line segment
+const distanceToLineSegment = (p: Point, v: Point, w: Point): number => {
+    const l2 = (v.x - w.x) ** 2 + (v.y - w.y) ** 2;
+    if (l2 === 0) return Math.sqrt((p.x - v.x) ** 2 + (p.y - v.y) ** 2);
+    let t = ((p.x - v.x) * (w.x - v.x) + (p.y - v.y) * (w.y - v.y)) / l2;
+    t = Math.max(0, Math.min(1, t));
+    const projX = v.x + t * (w.x - v.x);
+    const projY = v.y + t * (w.y - v.y);
+    return Math.sqrt((p.x - projX) ** 2 + (p.y - projY) ** 2);
+};
+
+// Hit test to find stroke at a point
+export const hitTestStroke = (point: Point, strokes: DrawingStroke[], threshold: number = 10): DrawingStroke | null => {
+    // Iterate in reverse to select top-most strokes first
+    for (let i = strokes.length - 1; i >= 0; i--) {
+        const stroke = strokes[i];
+        if (stroke.points.length === 0) continue;
+
+        const hitThreshold = Math.max(threshold, stroke.size / 2 + 5);
+
+        if (stroke.tool === 'brush' || stroke.tool === 'eraser' || stroke.tool === 'line') {
+            // Check distance to each line segment
+            for (let j = 0; j < stroke.points.length - 1; j++) {
+                const dist = distanceToLineSegment(point, stroke.points[j], stroke.points[j + 1]);
+                if (dist <= hitThreshold) return stroke;
+            }
+            // Also check first point for single-point strokes
+            if (stroke.points.length === 1) {
+                const dist = Math.sqrt((point.x - stroke.points[0].x) ** 2 + (point.y - stroke.points[0].y) ** 2);
+                if (dist <= hitThreshold) return stroke;
+            }
+        } else if (stroke.tool === 'rectangle' && stroke.points.length > 1) {
+            const start = stroke.points[0];
+            const end = stroke.points[stroke.points.length - 1];
+            const minX = Math.min(start.x, end.x) - hitThreshold;
+            const maxX = Math.max(start.x, end.x) + hitThreshold;
+            const minY = Math.min(start.y, end.y) - hitThreshold;
+            const maxY = Math.max(start.y, end.y) + hitThreshold;
+
+            // Check if near any edge of the rectangle
+            if (point.x >= minX && point.x <= maxX && point.y >= minY && point.y <= maxY) {
+                const innerMinX = Math.min(start.x, end.x) + hitThreshold;
+                const innerMaxX = Math.max(start.x, end.x) - hitThreshold;
+                const innerMinY = Math.min(start.y, end.y) + hitThreshold;
+                const innerMaxY = Math.max(start.y, end.y) - hitThreshold;
+
+                // Not inside the inner rectangle (i.e., near the edge)
+                if (!(point.x > innerMinX && point.x < innerMaxX && point.y > innerMinY && point.y < innerMaxY)) {
+                    return stroke;
+                }
+            }
+        } else if (stroke.tool === 'circle' && stroke.points.length > 1) {
+            const center = stroke.points[0];
+            const end = stroke.points[stroke.points.length - 1];
+            const radius = Math.sqrt((end.x - center.x) ** 2 + (end.y - center.y) ** 2);
+            const distFromCenter = Math.sqrt((point.x - center.x) ** 2 + (point.y - center.y) ** 2);
+
+            // Check if near the circle's edge
+            if (Math.abs(distFromCenter - radius) <= hitThreshold) {
+                return stroke;
+            }
+        }
+    }
+    return null;
+};
+
+// Draw selection highlight around a stroke
+export const drawSelectionHighlight = (ctx: CanvasRenderingContext2D, stroke: DrawingStroke) => {
+    if (!stroke || stroke.points.length === 0) return;
+
+    ctx.save();
+    ctx.strokeStyle = '#3b82f6';
+    ctx.lineWidth = 2;
+    ctx.setLineDash([5, 5]);
+
+    if (stroke.tool === 'rectangle' && stroke.points.length > 1) {
+        const start = stroke.points[0];
+        const end = stroke.points[stroke.points.length - 1];
+        const padding = 5;
+        ctx.strokeRect(
+            Math.min(start.x, end.x) - padding,
+            Math.min(start.y, end.y) - padding,
+            Math.abs(end.x - start.x) + padding * 2,
+            Math.abs(end.y - start.y) + padding * 2
+        );
+    } else if (stroke.tool === 'circle' && stroke.points.length > 1) {
+        const center = stroke.points[0];
+        const end = stroke.points[stroke.points.length - 1];
+        const radius = Math.sqrt((end.x - center.x) ** 2 + (end.y - center.y) ** 2);
+        ctx.beginPath();
+        ctx.arc(center.x, center.y, radius + 5, 0, 2 * Math.PI);
+        ctx.stroke();
+    } else {
+        // For brush, eraser, line - draw bounding box
+        let minX = Infinity, minY = Infinity, maxX = -Infinity, maxY = -Infinity;
+        stroke.points.forEach(p => {
+            minX = Math.min(minX, p.x);
+            minY = Math.min(minY, p.y);
+            maxX = Math.max(maxX, p.x);
+            maxY = Math.max(maxY, p.y);
+        });
+        const padding = stroke.size / 2 + 5;
+        ctx.strokeRect(minX - padding, minY - padding, maxX - minX + padding * 2, maxY - minY + padding * 2);
+    }
+
+    ctx.restore();
 };
