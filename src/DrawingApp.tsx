@@ -6,9 +6,8 @@ import { drawStroke, redrawCanvas, hitTestStroke, drawSelectionHighlight } from 
 import CanvasPage from './components/CanvasPage';
 import ToolPanel from './components/ToolPanel';
 import ControlPanel from './components/ControlPanel';
-import ThemeToggle from './components/ThemeToggle';
 import { jsPDF } from 'jspdf';
-import { XCircle } from 'lucide-react';
+import { Home, Sun, Moon } from 'lucide-react';
 
 const STORAGE_KEY = 'brushsy-drawing-state';
 
@@ -719,39 +718,51 @@ const DrawingApp: React.FC<DrawingAppProps> = ({ onClose }) => {
         surfaceHover: 'hover:bg-gray-600',
         text: 'text-gray-100',
         textSecondary: 'text-gray-400',
-        accent: 'bg-blue-600 hover:bg-blue-700',
-        accentHover: 'hover:bg-blue-700',
+        accent: 'bg-gradient-to-r from-purple-600 to-fuchsia-600 hover:from-purple-500 hover:to-fuchsia-500',
+        accentHover: 'hover:from-purple-500 hover:to-fuchsia-500',
         border: 'border-gray-600',
         canvas: 'bg-gradient-to-br from-gray-800 to-gray-900',
         shadow: 'shadow-xl shadow-black/20',
-        ring: 'ring-blue-500/30'
+        ring: 'ring-purple-500/30'
     } : {
-        bg: 'bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50',
+        bg: 'bg-gradient-to-br from-purple-50 via-fuchsia-50 to-pink-50',
         modal: 'bg-white/95 backdrop-blur-sm border-gray-200',
         surface: 'bg-white hover:bg-gray-50',
         surfaceHover: 'hover:bg-gray-50',
         text: 'text-gray-900',
         textSecondary: 'text-gray-600',
-        accent: 'bg-blue-600 hover:bg-blue-700',
-        accentHover: 'hover:bg-blue-700',
+        accent: 'bg-gradient-to-r from-purple-600 to-fuchsia-600 hover:from-purple-500 hover:to-fuchsia-500',
+        accentHover: 'hover:from-purple-500 hover:to-fuchsia-500',
         border: 'border-gray-200',
         canvas: 'bg-gradient-to-br from-white to-gray-50/50',
         shadow: 'shadow-xl shadow-gray-200/40',
-        ring: 'ring-blue-500/30'
+        ring: 'ring-purple-500/30'
     };
 
     return (
         <div className={`h-screen ${themeClasses.bg} ${themeClasses.text} relative overflow-hidden`}>
-            {onClose && (
+            {/* Top-left controls */}
+            <div className="fixed top-4 left-4 z-50 flex items-center space-x-3">
+                {onClose && (
+                    <button
+                        onClick={onClose}
+                        className="h-11 px-4 bg-gradient-to-r from-purple-600 to-fuchsia-600 hover:from-purple-500 hover:to-fuchsia-500 text-white rounded-xl flex items-center gap-2 shadow-lg shadow-purple-500/25 transition-all duration-300 hover:scale-105 active:scale-95"
+                        title="Back to Home (Escape)"
+                    >
+                        <Home className="w-5 h-5" />
+                        <span className="text-sm font-medium hidden sm:inline">Home</span>
+                    </button>
+                )}
                 <button
-                    onClick={onClose}
-                    className={`fixed top-4 right-4 z-50 w-12 h-12 ${themeClasses.surface} ${themeClasses.surfaceHover} rounded-full flex items-center justify-center ${themeClasses.shadow} transition-all duration-300 hover:scale-110`}
-                    title="Close Canvas (Escape)"
+                    onClick={() => setState(prev => ({ ...prev, isDarkTheme: !prev.isDarkTheme }))}
+                    className="w-11 h-11 bg-gradient-to-r from-purple-600 to-fuchsia-600 hover:from-purple-500 hover:to-fuchsia-500 text-white rounded-xl flex items-center justify-center shadow-lg shadow-purple-500/25 transition-all duration-300 hover:scale-105 active:scale-95"
+                    title="Toggle Theme"
                 >
-                    <XCircle className="w-6 h-6 text-gray-500" />
+                    {state.isDarkTheme ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
                 </button>
-            )}
-            <div className="absolute top-2 sm:top-4 left-2 sm:left-4 z-50 max-w-[calc(100%-4rem)] sm:max-w-xs">
+            </div>
+            {/* Top-right title */}
+            <div className="absolute top-2 sm:top-4 right-2 sm:right-4 z-50 max-w-[calc(100%-4rem)] sm:max-w-xs">
                 {isEditingTitle ? (
                     <div className={`${themeClasses.modal} border ${themeClasses.border} rounded-lg sm:rounded-xl px-2 sm:px-4 py-2 sm:py-3 ${themeClasses.shadow} flex items-center gap-2 sm:gap-3`}>
                         <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse flex-shrink-0"></div>
@@ -796,10 +807,10 @@ const DrawingApp: React.FC<DrawingAppProps> = ({ onClose }) => {
                         title="Click to edit title"
                     >
                         <div className="flex items-center gap-2 sm:gap-3">
-                            <div className="w-2 h-2 bg-blue-400 rounded-full flex-shrink-0"></div>
+                            <div className="w-2 h-2 bg-purple-400 rounded-full flex-shrink-0"></div>
                             <span className="text-xs sm:text-sm font-medium truncate max-w-[120px] sm:max-w-[180px]">{state.title}</span>
-                            <div className="w-5 h-5 sm:w-6 sm:h-6 bg-blue-100 rounded-lg flex items-center justify-center group-hover:bg-blue-200 transition-colors flex-shrink-0">
-                                <svg className="w-2.5 h-2.5 sm:w-3 sm:h-3 text-blue-600" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
+                            <div className="w-5 h-5 sm:w-6 sm:h-6 bg-purple-100 rounded-lg flex items-center justify-center group-hover:bg-purple-200 transition-colors flex-shrink-0">
+                                <svg className="w-2.5 h-2.5 sm:w-3 sm:h-3 text-purple-600" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
                                     <path strokeLinecap="round" strokeLinejoin="round" d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 16.07a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931Zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0 1 15.75 21H5.25A2.25 2.25 0 0 1 3 18.75V8.25A2.25 2.25 0 0 1 5.25 6H10" />
                                 </svg>
                             </div>
@@ -808,26 +819,24 @@ const DrawingApp: React.FC<DrawingAppProps> = ({ onClose }) => {
                 )}
             </div>
 
-            <ThemeToggle isDarkTheme={state.isDarkTheme} setState={setState} />
-
             <button
                 onClick={() => setState(prev => ({ ...prev, showLeftPanel: !prev.showLeftPanel }))}
-                className={`fixed bottom-4 sm:bottom-6 left-3 sm:left-6 z-50 w-12 h-12 sm:w-14 sm:h-14 ${themeClasses.accent} ${themeClasses.accentHover} text-white rounded-xl sm:rounded-2xl flex items-center justify-center ${themeClasses.shadow} transition-all duration-300 hover:scale-105 active:scale-95 group`}
+                className="fixed bottom-4 sm:bottom-6 left-3 sm:left-6 z-50 w-12 h-12 sm:w-14 sm:h-14 bg-gradient-to-r from-purple-600 to-fuchsia-600 hover:from-purple-500 hover:to-fuchsia-500 text-white rounded-xl sm:rounded-2xl flex items-center justify-center shadow-lg shadow-purple-500/25 transition-all duration-300 hover:scale-105 active:scale-95 group"
                 title="Toggle Tools Panel (T)"
             >
                 <div className="relative">
                     <svg className="w-5 h-5 sm:w-6 sm:h-6 transition-transform duration-300 group-hover:rotate-12" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" d="M9.53 16.122a3 3 0 0 0-5.78 1.128 2.25 2.25 0 0 1-2.4 2.245 4.5 4.5 0 0 0 8.4-2.245c0-.399-.078-.78-.22-1.128Zm0 0a15.998 15.998 0 0 0 3.388-1.62m-5.043-.025a15.994 15.994 0 0 1 1.622-3.395m3.42 3.42a15.995 15.995 0 0 0 4.764-4.648l3.876-5.814a1.151 1.151 0 0 0-1.597-1.597L14.146 6.32a15.996 15.996 0 0 0-4.649 4.763m3.42 3.42a6.776 6.776 0 0 0-3.42-3.42" />
                     </svg>
-                    <div className="hidden sm:block absolute -top-1 -right-1 w-3 h-3 bg-green-400 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                        <div className="w-full h-full bg-green-400 rounded-full animate-ping"></div>
+                    <div className="hidden sm:block absolute -top-1 -right-1 w-3 h-3 bg-fuchsia-300 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                        <div className="w-full h-full bg-fuchsia-300 rounded-full animate-ping"></div>
                     </div>
                 </div>
             </button>
 
             <button
                 onClick={() => setState(prev => ({ ...prev, showRightPanel: !prev.showRightPanel }))}
-                className={`fixed bottom-4 sm:bottom-6 right-3 sm:right-6 z-50 w-12 h-12 sm:w-14 sm:h-14 ${themeClasses.accent} ${themeClasses.accentHover} text-white rounded-xl sm:rounded-2xl flex items-center justify-center ${themeClasses.shadow} transition-all duration-300 hover:scale-105 active:scale-95 group`}
+                className="fixed bottom-4 sm:bottom-6 right-3 sm:right-6 z-50 w-12 h-12 sm:w-14 sm:h-14 bg-gradient-to-r from-purple-600 to-fuchsia-600 hover:from-purple-500 hover:to-fuchsia-500 text-white rounded-xl sm:rounded-2xl flex items-center justify-center shadow-lg shadow-purple-500/25 transition-all duration-300 hover:scale-105 active:scale-95 group"
                 title="Toggle Controls Panel (C)"
             >
                 <div className="relative">
@@ -835,8 +844,8 @@ const DrawingApp: React.FC<DrawingAppProps> = ({ onClose }) => {
                         <path strokeLinecap="round" strokeLinejoin="round" d="M10.343 3.94c.09-.542.56-.94 1.11-.94h1.093c.55 0 1.02.398 1.11.94l.149.894c.07.424.384.764.78.93.398.164.855.142 1.205-.108l.737-.527a1.125 1.125 0 0 1 1.45.12l.773.774c.39.389.44 1.002.12 1.45l-.527.737c-.25.35-.272.806-.107 1.204.165.397.505.71.93.78l.893.15c.543.09.94.559.94 1.109v1.094c0 .55-.397 1.02-.94 1.11l-.894.149c-.424.07-.764.383-.929.78-.165.398-.143.854.107 1.204l.527.738c.32.447.269 1.06-.12 1.45l-.774.773a1.125 1.125 0 0 1-1.449.12l-.738-.527c-.35-.25-.806-.272-1.203-.107-.398.165-.71.505-.781.929l-.149.894c-.09.542-.56.94-1.11.94h-1.094c-.55 0-1.019-.398-1.11-.94l-.148-.894c-.071-.424-.384-.764-.781-.93-.398-.164-.854-.142-1.204.108l-.738.527c-.447.32-1.06.269-1.45-.12l-.773-.774a1.125 1.125 0 0 1-.12-1.45l.527-.737c.25-.35.272-.806.108-1.204-.165-.397-.506-.71-.93-.78l-.894-.15c-.542-.09-.94-.56-.94-1.109v-1.094c0-.55.398-1.02.94-1.11l.894-.149c.424-.07.765-.383.93-.78.165-.398.143-.854-.108-1.204l-.526-.738a1.125 1.125 0 0 1 .12-1.45l.773-.773a1.125 1.125 0 0 1 1.45-.12l.737.527c.35.25.807.272 1.204.107.397-.165.71-.505.78-.929l.15-.894Z" />
                         <path strokeLinecap="round" strokeLinejoin="round" d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
                     </svg>
-                    <div className="hidden sm:block absolute -top-1 -right-1 w-3 h-3 bg-orange-400 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                        <div className="w-full h-full bg-orange-400 rounded-full animate-ping"></div>
+                    <div className="hidden sm:block absolute -top-1 -right-1 w-3 h-3 bg-fuchsia-300 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                        <div className="w-full h-full bg-fuchsia-300 rounded-full animate-ping"></div>
                     </div>
                 </div>
             </button>

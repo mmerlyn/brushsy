@@ -55,7 +55,7 @@ const ToolPanel: React.FC<ToolPanelProps> = ({ state, setState, themeClasses }) 
                             }}
                             className={`p-2 sm:p-4 rounded-lg transition-all border active:scale-95 ${
                                 state.currentTool === tool.id
-                                    ? `${themeClasses.accent} text-white border-blue-600`
+                                    ? 'bg-gradient-to-r from-purple-600 to-fuchsia-600 text-white border-purple-600 shadow-lg shadow-purple-500/25'
                                     : `${themeClasses.surface} ${themeClasses.surfaceHover} ${themeClasses.border}`
                             }`}
                         >
@@ -65,7 +65,7 @@ const ToolPanel: React.FC<ToolPanelProps> = ({ state, setState, themeClasses }) 
                                     <div className="font-medium text-xs sm:text-sm">{tool.name}</div>
                                     <div className={`text-[10px] sm:text-xs hidden sm:block ${
                                         state.currentTool === tool.id
-                                            ? 'text-blue-100'
+                                            ? 'text-purple-100'
                                             : themeClasses.textSecondary
                                     }`}>
                                         {tool.shortcut}

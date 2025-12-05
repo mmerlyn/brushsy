@@ -51,8 +51,8 @@ const ControlPanel: React.FC<ControlPanelProps> = ({
                 </div>
                 <div className="flex items-center justify-between mb-6">
                     <div className="flex items-center gap-3">
-                        <div className={`w-8 h-8 ${state.isDarkTheme ? 'bg-blue-900/50' : 'bg-blue-100'} rounded-xl flex items-center justify-center`}>
-                            <svg className={`w-5 h-5 ${state.isDarkTheme ? 'text-blue-400' : 'text-blue-600'}`} fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
+                        <div className={`w-8 h-8 ${state.isDarkTheme ? 'bg-purple-900/50' : 'bg-purple-100'} rounded-xl flex items-center justify-center`}>
+                            <svg className={`w-5 h-5 ${state.isDarkTheme ? 'text-purple-400' : 'text-purple-600'}`} fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
                                 <path strokeLinecap="round" strokeLinejoin="round" d="M10.343 3.94c.09-.542.56-.94 1.11-.94h1.093c.55 0 1.02.398 1.11.94l.149.894c.07.424.384.764.78.93.398.164.855.142 1.205-.108l.737-.527a1.125 1.125 0 0 1 1.45.12l.773.774c.39.389.44 1.002.12 1.45l-.527.737c-.25.35-.272.806-.107 1.204.165.397.505.71.93.78l.893.15c.543.09.94.559.94 1.109v1.094c0 .55-.397 1.02-.94 1.11l-.894.149c-.424.07-.764.383-.929.78-.165.398-.143.854.107 1.204l.527.738c.32.447.269 1.06-.12 1.45l-.774.773a1.125 1.125 0 0 1-1.449.12l-.738-.527c-.35-.25-.806-.272-1.203-.107-.398.165-.71.505-.781.929l-.149.894c-.09.542-.56.94-1.11.94h-1.094c-.55 0-1.019-.398-1.11-.94l-.148-.894c-.071-.424-.384-.764-.781-.93-.398-.164-.854-.142-1.204.108l-.738.527c-.447.32-1.06.269-1.45-.12l-.773-.774a1.125 1.125 0 0 1-.12-1.45l.527-.737c.25-.35.272-.806.108-1.204-.165-.397-.506-.71-.93-.78l-.894-.15c-.542-.09-.94-.56-.94-1.109v-1.094c0-.55.398-1.02.94-1.11l.894-.149c.424-.07.765-.383.93-.78.165-.398.143-.854-.108-1.204l-.526-.738a1.125 1.125 0 0 1 .12-1.45l.773-.773a1.125 1.125 0 0 1 1.45-.12l.737.527c.35.25.807.272 1.204.107.397-.165.71-.505.78-.929l.15-.894Z" />
                                 <path strokeLinecap="round" strokeLinejoin="round" d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
                             </svg>
@@ -130,8 +130,8 @@ const ControlPanel: React.FC<ControlPanelProps> = ({
                                 onClick={() => setState(prev => ({ ...prev, currentColor: color }))}
                                 className={`w-8 h-8 rounded border-2 transition-all ${
                                     state.currentColor === color
-                                        ? 'border-blue-500 ring-2 ring-blue-200'
-                                        : `${themeClasses.border} hover:border-blue-300`
+                                        ? 'border-purple-500 ring-2 ring-purple-200'
+                                        : `${themeClasses.border} hover:border-purple-300`
                                 }`}
                                 style={{ backgroundColor: color }}
                             />
@@ -184,7 +184,7 @@ const ControlPanel: React.FC<ControlPanelProps> = ({
                         onClick={() => setState(prev => ({ ...prev, showGrid: !prev.showGrid }))}
                         className={`w-full p-3 rounded-xl transition-all hover:scale-105 flex items-center justify-center gap-2 text-sm font-medium ${
                             state.showGrid
-                                ? `${themeClasses.accent} text-white shadow-lg shadow-blue-200`
+                                ? 'bg-gradient-to-r from-purple-600 to-fuchsia-600 text-white shadow-lg shadow-purple-500/25'
                                 : `${themeClasses.surface} ${themeClasses.surfaceHover}`
                         }`}
                     >
@@ -216,7 +216,7 @@ const ControlPanel: React.FC<ControlPanelProps> = ({
                                 onClick={() => scrollToPage(index)}
                                 className={`aspect-square rounded-lg text-sm font-medium transition-all hover:scale-110 ${
                                     index === state.activePageIndex
-                                        ? `${themeClasses.accent} text-white shadow-lg shadow-blue-200`
+                                        ? 'bg-gradient-to-r from-purple-600 to-fuchsia-600 text-white shadow-lg shadow-purple-500/25'
                                         : `${themeClasses.surface} ${themeClasses.surfaceHover}`
                                 }`}
                             >
@@ -227,7 +227,7 @@ const ControlPanel: React.FC<ControlPanelProps> = ({
                     <div className="flex gap-2">
                         <button
                             onClick={addPage}
-                            className={`flex-1 p-3 rounded-xl border-2 border-dashed ${themeClasses.border} hover:border-blue-400 ${state.isDarkTheme ? 'hover:bg-blue-900/20' : 'hover:bg-blue-50'} transition-all hover:scale-105 flex items-center justify-center gap-2 text-sm font-medium`}
+                            className={`flex-1 p-3 rounded-xl border-2 border-dashed ${themeClasses.border} hover:border-purple-400 ${state.isDarkTheme ? 'hover:bg-purple-900/20' : 'hover:bg-purple-50'} transition-all hover:scale-105 flex items-center justify-center gap-2 text-sm font-medium`}
                         >
                             <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
                                 <path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
@@ -249,8 +249,8 @@ const ControlPanel: React.FC<ControlPanelProps> = ({
 
                 <div>
                     <div className="flex items-center gap-2 mb-4">
-                        <div className={`w-6 h-6 ${state.isDarkTheme ? 'bg-indigo-900/50' : 'bg-indigo-100'} rounded-lg flex items-center justify-center`}>
-                            <svg className={`w-4 h-4 ${state.isDarkTheme ? 'text-indigo-400' : 'text-indigo-600'}`} fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
+                        <div className={`w-6 h-6 ${state.isDarkTheme ? 'bg-purple-900/50' : 'bg-purple-100'} rounded-lg flex items-center justify-center`}>
+                            <svg className={`w-4 h-4 ${state.isDarkTheme ? 'text-purple-400' : 'text-purple-600'}`} fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
                                 <path strokeLinecap="round" strokeLinejoin="round" d="M3 16.5v2.25A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75V16.5M16.5 12 12 16.5m0 0L7.5 12m4.5 4.5V3" />
                             </svg>
                         </div>
@@ -275,7 +275,7 @@ const ControlPanel: React.FC<ControlPanelProps> = ({
                         <button
                             onClick={exportPDF}
                             disabled={isExporting}
-                            className={`w-full p-4 rounded-xl ${themeClasses.accent} ${themeClasses.accentHover} disabled:opacity-50 disabled:cursor-not-allowed text-white transition-all hover:scale-105 flex items-center justify-center gap-3 font-medium shadow-lg shadow-blue-200`}
+                            className="w-full p-4 rounded-xl bg-gradient-to-r from-purple-600 to-fuchsia-600 hover:from-purple-500 hover:to-fuchsia-500 disabled:opacity-50 disabled:cursor-not-allowed text-white transition-all hover:scale-105 flex items-center justify-center gap-3 font-medium shadow-lg shadow-purple-500/25"
                         >
                             <div className="w-6 h-6 bg-white/20 rounded-lg flex items-center justify-center">
                                 {isExporting ? (
@@ -290,7 +290,7 @@ const ControlPanel: React.FC<ControlPanelProps> = ({
                             </div>
                             <div className="text-left">
                                 <div className="font-semibold">{isExporting ? 'Generating...' : 'Export PDF'}</div>
-                                <div className="text-xs text-blue-100">{isExporting ? 'Please wait' : 'All pages included'}</div>
+                                <div className="text-xs text-purple-100">{isExporting ? 'Please wait' : 'All pages included'}</div>
                             </div>
                         </button>
                     </div>

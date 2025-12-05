@@ -4,7 +4,7 @@ A modern, web-based digital drawing application built with React and TypeScript.
 
 ## About
 
-Brushsy is an interactive whiteboard/drawing app that lets you sketch, draw shapes, and create artwork across multiple pages. Your work is automatically saved to the browser and can be exported as PNG or PDF.
+Brushsy is an interactive whiteboard/drawing app that lets you sketch, draw shapes, and create artwork across multiple pages. Your work is automatically saved to the browser and can be exported as PNG or PDF
 
 ## Features
 

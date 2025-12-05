@@ -142,7 +142,7 @@ const HomePage: React.FC = () => {
               <ArrowRight className="w-5 h-5 transition-transform group-hover:translate-x-1" />
             </button>
             <a
-              href="https://github.com"
+              href="https://github.com/mmerlyn/brushsy"
               target="_blank"
               rel="noopener noreferrer"
               className={`inline-flex items-center gap-2 px-6 py-4 rounded-xl text-lg font-medium transition-all duration-300 hover:scale-105 active:scale-95 ${
@@ -308,16 +308,6 @@ const HomePage: React.FC = () => {
           </div>
         </div>
 
-        {/* Footer */}
-        <footer
-          className={`pb-8 text-sm transition-all duration-700 delay-700 ${
-            isLoaded ? 'translate-y-0 opacity-100' : 'translate-y-4 opacity-0'
-          } ${
-            theme === 'dark' ? 'text-zinc-500' : 'text-zinc-400'
-          }`}
-        >
-          Built with React + TypeScript + Canvas API
-        </footer>
       </main>
 
       {/* Drawing App Modal */}
