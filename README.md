@@ -37,13 +37,6 @@ Brushsy is an interactive whiteboard/drawing app that lets you sketch, draw shap
 - **Data Persistence** - Saving user data to localStorage
 - **Responsive Design** - Building UI that adapts to different screen sizes
 
-## Getting Started
-
-```bash
-npm install
-npm run dev
-```
-
 ## License
 
 MIT
