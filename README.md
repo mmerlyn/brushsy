@@ -1,10 +1,10 @@
 # Brushsy
 
-A modern, web-based digital drawing application built with React and TypeScript.
+A digital drawing app I built to practice frontend development with React and TypeScript.
 
 ## About
 
-Brushsy is an interactive whiteboard/drawing app that lets you sketch, draw shapes, and create artwork across multiple pages. Your work is automatically saved to the browser and can be exported as PNG or PDF
+I built Brushsy as a learning project to get hands-on experience with the HTML Canvas API and explore performance optimization in React. It's a simple whiteboard/drawing app where you can sketch, draw shapes, and create artwork across multiple pages. Everything auto-saves to the browser and can be exported as PNG or PDF.
 
 ## Features
 
@@ -28,6 +28,8 @@ Brushsy is an interactive whiteboard/drawing app that lets you sketch, draw shap
 - **Vite** - Build tool
 
 ## What I Learned
+
+Building this project taught me a lot about frontend development:
 
 - **Performance Optimization** - Using refs instead of state to avoid lag during drawing
 - **State Management** - Handling complex undo/redo history across multiple pages
