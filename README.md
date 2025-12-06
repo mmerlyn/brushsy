@@ -2,6 +2,8 @@
 
 A digital drawing app I built to practice frontend development with React and TypeScript.
 
+[Live Application](https://www.brushsy.net/)
+
 ## About
 
 I built Brushsy as a learning project to get hands-on experience with the HTML Canvas API and explore performance optimization in React. It's a simple whiteboard/drawing app where you can sketch, draw shapes, and create artwork across multiple pages. Everything auto-saves to the browser and can be exported as PNG or PDF.
